@@ -1,0 +1,141 @@
+/* dark.css */
+
+/* Root background and text color */
+body,
+html {
+  background-color: #121212;
+  color: #f3f4f6; /* gray-100 */
+}
+
+/* Cards, containers, panels */
+.card,
+.container,
+.panel,
+.form-wrapper {
+  background-color: #1e1e1e;
+  color: #f3f4f6;
+  border: 1px solid #2c2c2c;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #f9fafb;
+}
+
+/* Inputs and form elements */
+.form-input,
+.form-textarea,
+.form-select {
+  background-color: #1a1a1a;
+  color: #f3f4f6;
+  border: 1px solid #3b3b3b;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+/* Labels */
+.form-label {
+  color: #d1d5db;
+}
+
+/* Buttons */
+.form-submit-btn,
+.button {
+  background-color: #2563eb;
+  color: white;
+}
+
+.form-submit-btn:hover,
+.button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Tables */
+table {
+  background-color: #1f1f1f;
+  color: #e5e7eb;
+  border-color: #2e2e2e;
+}
+
+thead {
+  background-color: #2b2b2b;
+}
+
+th,
+td {
+  border-color: #2e2e2e;
+}
+
+/* Links */
+a {
+  color: #60a5fa;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Scrollbar for dark mode */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Notifications and alerts */
+.notification {
+  background-color: #272727;
+  border-left: 4px solid #60a5fa;
+  color: #f3f4f6;
+}
+
+/* Modals */
+.modal {
+  background-color: #1f1f1f;
+  color: #e5e7eb;
+  border: 1px solid #333;
+}
+
+/* Footer & nav */
+footer,
+nav {
+  background-color: #181818;
+  color: #cbd5e1;
+  border-top: 1px solid #2c2c2c;
+}
+
+/* Tags or badges */
+.tag,
+.badge {
+  background-color: #2a2a2a;
+  color: #93c5fd;
+}
+
+/* Success, error, warning highlights */
+.success {
+  color: #22c55e;
+}
+
+.error {
+  color: #ef4444;
+}
+
+.warning {
+  color: #facc15;
+}

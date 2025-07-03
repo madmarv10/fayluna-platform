@@ -1,0 +1,111 @@
+/* forms.css */
+
+/* General form layout */
+.form-wrapper {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.form-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #1f2937; /* gray-800 */
+  text-align: center;
+}
+
+/* Form groups */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #374151; /* gray-700 */
+}
+
+/* Input fields */
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: #f9fafb; /* gray-50 */
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  border-color: #3b82f6; /* blue-500 */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Textarea */
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Submit button */
+.form-submit-btn {
+  display: inline-block;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background-color: #2563eb; /* blue-600 */
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.form-submit-btn:hover {
+  background-color: #1d4ed8; /* blue-700 */
+}
+
+/* Error messages */
+.form-error {
+  color: #dc2626; /* red-600 */
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/* Success messages */
+.form-success {
+  color: #16a34a; /* green-600 */
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Link below form (e.g. forgot password, sign up links) */
+.form-footer-link {
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 1rem;
+  color: #6b7280; /* gray-500 */
+}
+
+.form-footer-link a {
+  color: #2563eb; /* blue-600 */
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.form-footer-link a:hover {
+  text-decoration: underline;
+}

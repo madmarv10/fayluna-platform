@@ -1,0 +1,35 @@
+{
+  "name": "bloghub-backend",
+  "version": "1.0.0",
+  "description": "Backend for BlogHub - A modern blogging and social platform",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "jest --runInBand"
+  },
+  "keywords": [],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.37.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.0.0",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.8",
+    "validator": "^13.11.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.3",
+    "supertest": "^6.4.2"
+  }
+}

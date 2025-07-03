@@ -1,0 +1,24 @@
+{
+  "name": "Fayluna Platform",
+  "short_name": "Fayluna",
+  "description": "A modern platform for content creation, analytics, and community engagement.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#6b46c1",
+  "icons": [
+    {
+      "src": "assets/images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "lang": "en-US"
+}

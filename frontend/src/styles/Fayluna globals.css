@@ -1,0 +1,119 @@
+/* globals.css */
+
+/* CSS Reset - Based on modern reset approach */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: #f9fafb;
+  color: #1a1a1a;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: #2563eb; /* Tailwind blue-600 */
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover,
+a:focus {
+  color: #1e40af; /* Tailwind blue-800 */
+  outline: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+input, textarea, select, button {
+  font: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 0.5em;
+  color: #111827; /* Tailwind gray-900 */
+}
+
+p {
+  margin-bottom: 1em;
+  color: #374151; /* Tailwind gray-700 */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+  background-color: #e5e7eb; /* Tailwind gray-200 */
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.95em;
+}
+
+.container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  height: 1px; 
+  width: 1px; 
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap; 
+}
+
+/* Scrollbar styling for modern browsers */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f4f6; /* Tailwind gray-100 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #9ca3af; /* Tailwind gray-400 */
+  border-radius: 10px;
+  border: 3px solid #f3f4f6; /* same as track */
+}
+

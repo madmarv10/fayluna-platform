@@ -1,0 +1,114 @@
+/* auth.css */
+
+/* Container for auth forms */
+.auth-container {
+  max-width: 400px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  font-family: inherit;
+}
+
+/* Form title */
+.auth-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #111827; /* gray-900 */
+}
+
+/* Form group */
+.auth-form-group {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Labels */
+.auth-form-label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #374151; /* gray-700 */
+}
+
+/* Inputs */
+.auth-form-input {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border: 1.5px solid #d1d5db; /* gray-300 */
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+  outline-offset: 2px;
+}
+
+.auth-form-input:focus {
+  border-color: #2563eb; /* blue-600 */
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+  outline: none;
+}
+
+/* Submit button */
+.auth-submit-btn {
+  width: 100%;
+  padding: 0.75rem 0;
+  background-color: #2563eb; /* blue-600 */
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.auth-submit-btn:hover,
+.auth-submit-btn:focus {
+  background-color: #1e40af; /* blue-800 */
+  outline: none;
+}
+
+/* Error message */
+.auth-error-message {
+  color: #dc2626; /* red-600 */
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
+/* Link below form (like 'Forgot password?' or 'Sign up') */
+.auth-link {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.auth-link:hover,
+.auth-link:focus {
+  color: #1e40af;
+  outline: none;
+}
+
+/* Loading spinner (optional) */
+.auth-loading-spinner {
+  margin: 0 auto;
+  border: 4px solid #e5e7eb; /* gray-200 */
+  border-top: 4px solid #2563eb; /* blue-600 */
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

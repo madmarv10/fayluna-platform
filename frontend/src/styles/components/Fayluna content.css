@@ -1,0 +1,124 @@
+/* content.css */
+
+/* Layout wrapper */
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Section titles */
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #1f2937; /* gray-800 */
+}
+
+/* Blog card container */
+.blog-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.blog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Blog thumbnail */
+.blog-thumbnail {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Blog content */
+.blog-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Blog title */
+.blog-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827; /* gray-900 */
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.blog-title:hover {
+  color: #2563eb; /* blue-600 */
+}
+
+/* Blog description */
+.blog-description {
+  font-size: 0.95rem;
+  color: #4b5563; /* gray-600 */
+  line-height: 1.5;
+}
+
+/* Blog meta (e.g., author, date) */
+.blog-meta {
+  font-size: 0.85rem;
+  color: #6b7280; /* gray-500 */
+}
+
+/* Tags */
+.blog-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.blog-tag {
+  background-color: #e0f2fe; /* light blue */
+  color: #0369a1; /* blue-700 */
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Link styling */
+a.blog-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Load more button */
+.load-more-btn {
+  margin: 2rem auto;
+  display: block;
+  padding: 0.75rem 2rem;
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.load-more-btn:hover {
+  background-color: #1d4ed8;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  color: #9ca3af; /* gray-400 */
+  font-size: 1.1rem;
+  margin-top: 3rem;
+}

@@ -1,0 +1,15 @@
+from PIL import Image, ImageDraw
+
+# Create a simple 32x32 icon with a purple background and white "F" letter for Fayluna
+size = (32, 32)
+background_color = (107, 70, 193)  # hex #6b46c1
+icon = Image.new("RGB", size, background_color)
+draw = ImageDraw.Draw(icon)
+# Draw a simple 'F' in the center
+draw.text((8, 6), "F", fill="white")
+
+# Save as favicon.ico
+favicon_path = "/mnt/data/favicon.ico"
+icon.save(favicon_path, format="ICO")
+
+favicon_path

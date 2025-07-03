@@ -1,0 +1,158 @@
+/* purple-gradient.css */
+
+/* Background and base text color */
+body,
+html {
+  background: linear-gradient(to bottom right, #3b0764, #5b21b6, #7c3aed);
+  color: #f3e8ff; /* light lavender/white */
+  font-family: 'Inter', sans-serif;
+}
+
+/* Cards, panels, containers */
+.card,
+.container,
+.panel,
+.form-wrapper {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  padding: 1rem;
+  color: #f5f3ff;
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.4);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #e9d5ff;
+}
+
+/* Inputs and form elements */
+.form-input,
+.form-textarea,
+.form-select {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #f5f3ff;
+  border: 1px solid #a855f7;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #c084fc;
+  box-shadow: 0 0 0 2px rgba(192, 132, 252, 0.5);
+}
+
+/* Labels */
+.form-label {
+  color: #f3e8ff;
+}
+
+/* Buttons */
+.form-submit-btn,
+.button {
+  background: linear-gradient(to right, #9333ea, #7c3aed);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.form-submit-btn:hover,
+.button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(to right, #a855f7, #9333ea);
+}
+
+/* Tables */
+table {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #f3e8ff;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+thead {
+  background-color: rgba(124, 58, 237, 0.2);
+}
+
+th,
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Links */
+a {
+  color: #c084fc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a78bfa;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c084fc;
+}
+
+/* Notifications and modals */
+.notification,
+.modal {
+  background: rgba(124, 58, 237, 0.15);
+  color: #f3e8ff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+/* Footer and nav */
+footer,
+nav {
+  background: rgba(0, 0, 0, 0.2);
+  color: #e9d5ff;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+}
+
+/* Tags and badges */
+.tag,
+.badge {
+  background-color: #7c3aed;
+  color: #f3e8ff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+/* State indicators */
+.success {
+  color: #86efac;
+}
+
+.error {
+  color: #fca5a5;
+}
+
+.warning {
+  color: #fde68a;
+}
