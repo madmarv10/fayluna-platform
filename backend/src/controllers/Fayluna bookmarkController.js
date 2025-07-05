@@ -1,6 +1,6 @@
 // backend/src/controllers/bookmarkController.js
 
-const bookmarkService = require('../services/bookmarkService');
+import bookmarkService from '../services/Fayluna bookmarkService.js';
 
 /**
  * @desc    Get all bookmarks for the authenticated user
@@ -54,8 +54,10 @@ const removeBookmark = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  getUserBookmarks,
+const getBookmarks = getUserBookmarks;
+
+export {
+  getBookmarks,
   addBookmark,
   removeBookmark,
 };

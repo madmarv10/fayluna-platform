@@ -1,6 +1,6 @@
 // usersApi.js
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://your-api-url.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 // Register a new user
 async function registerUser({ username, email, password }) {

@@ -1,13 +1,13 @@
 // backend/src/controllers/authController.js
 
-const authService = require('../services/authService');
+import authService from '../services/Fayluna authService.js';
 
 /**
  * @desc    Register a new user
- * @route   POST /api/auth/signup
+ * @route   POST /api/auth/register
  * @access  Public
  */
-const signup = async (req, res, next) => {
+const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     // authService.signup should create the user and return { user, token }
@@ -82,8 +82,8 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  signup,
+export {
+  register,
   login,
   logout,
   forgotPassword,

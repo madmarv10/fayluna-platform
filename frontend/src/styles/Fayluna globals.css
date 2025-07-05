@@ -1,5 +1,10 @@
 /* globals.css */
 
+/* Tailwind CSS directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* CSS Reset - Based on modern reset approach */
 *,
 *::before,

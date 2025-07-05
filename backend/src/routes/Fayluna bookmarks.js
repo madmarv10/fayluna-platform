@@ -4,7 +4,7 @@ import {
   getBookmarks,
   addBookmark,
   removeBookmark
-} from "../controllers/bookmarkController.js";
+} from "../controllers/Fayluna bookmarkController.js";
 
 const router = express.Router();
 

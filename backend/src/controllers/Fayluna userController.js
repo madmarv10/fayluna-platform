@@ -1,6 +1,6 @@
 // backend/src/controllers/userController.js
 
-const userService = require('../services/userService');
+import userService from '../services/Fayluna userService.js';
 
 /**
  * @desc    Get a user's public profile by username
@@ -119,11 +119,26 @@ const getFollowers = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  getProfile,
-  updateProfile,
+// Get the currently authenticated user's profile
+const getMyProfile = async (req, res, next) => {
+  try {
+    const user = req.user; // set by auth middleware
+    res.status(200).json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Alias exports to match route imports
+const getUserProfile = getProfile;
+const updateUserProfile = updateProfile;
+
+export {
+  getUserProfile,
+  updateUserProfile,
   followUser,
   unfollowUser,
-  getFollowing,
   getFollowers,
+  getFollowing,
+  getMyProfile,
 };

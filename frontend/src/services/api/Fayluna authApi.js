@@ -1,49 +1,81 @@
-// localStorage.js
+// authApi.js
 
-/**
- * Save data to localStorage as JSON string
- * @param {string} key
- * @param {any} value
- */
-function setItem(key, value) {
-  try {
-    const serializedValue = JSON.stringify(value);
-    localStorage.setItem(key, serializedValue);
-  } catch (error) {
-    console.error('Error saving to localStorage', error);
+import axios from 'axios';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+
+// Create axios instance with default config
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor to add auth token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-}
+);
 
-/**
- * Get data from localStorage and parse from JSON string
- * @param {string} key
- * @returns {any|null} Parsed value or null if none found or error
- */
-function getItem(key) {
-  try {
-    const serializedValue = localStorage.getItem(key);
-    if (serializedValue === null) return null;
-    return JSON.parse(serializedValue);
-  } catch (error) {
-    console.error('Error reading from localStorage', error);
-    return null;
+// Response interceptor to handle auth errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
   }
-}
+);
 
-/**
- * Remove item from localStorage
- * @param {string} key
- */
-function removeItem(key) {
-  try {
-    localStorage.removeItem(key);
-  } catch (error) {
-    console.error('Error removing from localStorage', error);
-  }
-}
+// Auth API functions
+export const authApi = {
+  // Register new user
+  register: async (userData) => {
+    const response = await api.post('/auth/register', userData);
+    return response.data;
+  },
 
-export {
-  setItem,
-  getItem,
-  removeItem,
+  // Login user
+  login: async (credentials) => {
+    const response = await api.post('/auth/login', credentials);
+    return response.data;
+  },
+
+  // Logout user
+  logout: async () => {
+    const response = await api.post('/auth/logout');
+    return response.data;
+  },
+
+  // Forgot password
+  forgotPassword: async (email) => {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+
+  // Reset password
+  resetPassword: async (token, newPassword) => {
+    const response = await api.post('/auth/reset-password', { token, newPassword });
+    return response.data;
+  },
+
+  // Get current user
+  getCurrentUser: async () => {
+    const response = await api.get('/auth/me');
+    return response.data;
+  },
 };
+
+export default authApi;

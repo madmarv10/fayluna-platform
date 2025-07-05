@@ -1,6 +1,6 @@
 // backend/src/controllers/analyticsController.js
 
-const analyticsService = require('../services/analyticsService');
+import analyticsService from '../services/Fayluna analyticsService.js';
 
 /**
  * @desc    Get overall analytics summary (total views, clicks, submissions)
@@ -90,10 +90,14 @@ const getTrafficSources = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  getSummary,
-  getPostAnalytics,
-  getTimeSeries,
+const getBlogAnalytics = getPostAnalytics;
+const getPlatformAnalytics = getSummary;
+const getUserAnalytics = getTimeSeries;
+
+export {
+  getBlogAnalytics,
+  getUserAnalytics,
+  getPlatformAnalytics,
   getEngagementStats,
   getTrafficSources,
 };

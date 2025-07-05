@@ -1,6 +1,6 @@
 // backend/src/controllers/blogController.js
 
-const blogService = require('../services/blogService');
+import blogService from '../services/Fayluna blogService.js';
 
 /**
  * @desc    Fetch all blog submissions (with optional pagination and search)
@@ -13,9 +13,10 @@ const getAllBlogs = async (req, res, next) => {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
     const search = req.query.search || '';
+    const category = req.query.category || '';
 
     // blogService.getAll should return { blogs, total, page, limit }
-    const data = await blogService.getAll({ page, limit, search });
+    const data = await blogService.getAll({ page, limit, search, category });
     res.status(200).json(data);
   } catch (err) {
     next(err);
@@ -45,8 +46,8 @@ const getBlogById = async (req, res, next) => {
  */
 const createBlog = async (req, res, next) => {
   try {
-    const { title, url, photoUrl, description } = req.body;
-    const userId = req.user.id; // Assume auth middleware set req.user
+    const { title, url, photoUrl, description, tags, category } = req.body;
+    const userId = req.user._id; // Assume auth middleware set req.user
 
     // blogService.create should create and return the new blog object
     const newBlog = await blogService.create({
@@ -55,6 +56,8 @@ const createBlog = async (req, res, next) => {
       photoUrl,
       description,
       authorId: userId,
+      tags,
+      category,
     });
 
     res.status(201).json(newBlog);
@@ -71,8 +74,8 @@ const createBlog = async (req, res, next) => {
 const updateBlog = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, url, photoUrl, description } = req.body;
-    const userId = req.user.id; // Assume auth middleware set req.user
+    const { title, url, photoUrl, description, tags, category } = req.body;
+    const userId = req.user._id; // Assume auth middleware set req.user
 
     // blogService.update should check ownership and update fields
     const updatedBlog = await blogService.update(id, {
@@ -80,8 +83,9 @@ const updateBlog = async (req, res, next) => {
       url,
       photoUrl,
       description,
-      userId,
-    });
+      tags,
+      category,
+    }, userId);
 
     res.status(200).json(updatedBlog);
   } catch (err) {
@@ -97,7 +101,7 @@ const updateBlog = async (req, res, next) => {
 const deleteBlog = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id; // Assume auth middleware set req.user
+    const userId = req.user._id; // Assume auth middleware set req.user
 
     // blogService.delete should check ownership and delete the blog
     await blogService.delete(id, userId);
@@ -107,10 +111,29 @@ const deleteBlog = async (req, res, next) => {
   }
 };
 
-module.exports = {
+/**
+ * @desc    Search blogs by title or description
+ * @route   GET /api/blogs/search
+ * @access  Public
+ */
+const searchBlogs = async (req, res, next) => {
+  try {
+    const { q } = req.query;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+
+    const data = await blogService.search({ q, page, limit });
+    res.status(200).json(data);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export {
   getAllBlogs,
   getBlogById,
   createBlog,
   updateBlog,
   deleteBlog,
+  searchBlogs,
 };

@@ -1,97 +1,175 @@
 // services/blogService.js
 
-import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api';
+import Blog from '../models/Fayluna Blog.js';
 
 const blogService = {
-  async createBlog(blogData) {
+  async create({ title, url, photoUrl, description, authorId, tags = [], category = 'general' }) {
     try {
-      const token = localStorage.getItem('authToken');
-      const response = await axios.post(`${API_BASE_URL}/blogs`, blogData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const blog = new Blog({
+        title,
+        url,
+        photoUrl,
+        description,
+        author: authorId,
+        tags,
+        category,
+        status: 'published'
       });
-      return response.data;
+
+      await blog.save();
+      return blog.populate('author', 'name username avatarUrl');
     } catch (error) {
-      throw error.response?.data || { message: 'Failed to submit blog' };
+      throw error;
     }
   },
 
-  async getAllBlogs(params = {}) {
+  async getAll({ page = 1, limit = 10, search = '', category = '' }) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/blogs`, { params });
-      return response.data;
+      const skip = (page - 1) * limit;
+      let query = { status: 'published' };
+
+      if (search) {
+        query.$or = [
+          { title: { $regex: search, $options: 'i' } },
+          { description: { $regex: search, $options: 'i' } },
+          { tags: { $in: [new RegExp(search, 'i')] } }
+        ];
+      }
+
+      if (category) {
+        query.category = category;
+      }
+
+      const blogs = await Blog.find(query)
+        .populate('author', 'name username avatarUrl')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+      const total = await Blog.countDocuments(query);
+
+      return {
+        blogs,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      };
     } catch (error) {
-      throw error.response?.data || { message: 'Failed to load blogs' };
+      throw error;
     }
   },
 
-  async getBlogById(id) {
+  async getById(id) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/blogs/${id}`);
-      return response.data;
+      const blog = await Blog.findById(id)
+        .populate('author', 'name username avatarUrl');
+      
+      if (!blog) {
+        throw new Error('Blog not found');
+      }
+
+      return blog;
     } catch (error) {
-      throw error.response?.data || { message: 'Failed to load blog' };
+      throw error;
     }
   },
 
-  async updateBlog(id, updatedData) {
+  async update(id, updateData, userId) {
     try {
-      const token = localStorage.getItem('authToken');
-      const response = await axios.put(`${API_BASE_URL}/blogs/${id}`, updatedData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const blog = await Blog.findById(id);
+      
+      if (!blog) {
+        throw new Error('Blog not found');
+      }
+
+      if (blog.author.toString() !== userId) {
+        throw new Error('Not authorized to update this blog');
+      }
+
+      const updatedBlog = await Blog.findByIdAndUpdate(
+        id,
+        updateData,
+        { new: true, runValidators: true }
+      ).populate('author', 'name username avatarUrl');
+
+      return updatedBlog;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async delete(id, userId) {
+    try {
+      const blog = await Blog.findById(id);
+      
+      if (!blog) {
+        throw new Error('Blog not found');
+      }
+
+      if (blog.author.toString() !== userId) {
+        throw new Error('Not authorized to delete this blog');
+      }
+
+      await Blog.findByIdAndDelete(id);
+      return { success: true };
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async search({ q, page = 1, limit = 10 }) {
+    try {
+      const skip = (page - 1) * limit;
+      
+      const blogs = await Blog.search(q)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+      const total = await Blog.countDocuments({
+        $or: [
+          { title: { $regex: q, $options: 'i' } },
+          { description: { $regex: q, $options: 'i' } },
+          { tags: { $in: [new RegExp(q, 'i')] } }
+        ],
+        status: 'published'
       });
-      return response.data;
+
+      return {
+        blogs,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      };
     } catch (error) {
-      throw error.response?.data || { message: 'Failed to update blog' };
+      throw error;
     }
   },
 
-  async deleteBlog(id) {
+  async getByAuthor(authorId, { page = 1, limit = 10 } = {}) {
     try {
-      const token = localStorage.getItem('authToken');
-      const response = await axios.delete(`${API_BASE_URL}/blogs/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to delete blog' };
-    }
-  },
+      const skip = (page - 1) * limit;
+      
+      const blogs = await Blog.findByAuthor(authorId)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
 
-  async getMyBlogs() {
-    try {
-      const token = localStorage.getItem('authToken');
-      const response = await axios.get(`${API_BASE_URL}/blogs/mine`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch user blogs' };
-    }
-  },
+      const total = await Blog.countDocuments({ author: authorId, status: 'published' });
 
-  async getAnalytics(id) {
-    try {
-      const token = localStorage.getItem('authToken');
-      const response = await axios.get(`${API_BASE_URL}/blogs/${id}/analytics`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
+      return {
+        blogs,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      };
     } catch (error) {
-      throw error.response?.data || { message: 'Failed to load blog analytics' };
+      throw error;
     }
-  },
+  }
 };
 
 export default blogService;

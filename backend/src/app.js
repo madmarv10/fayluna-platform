@@ -1,103 +1,61 @@
-// src/App.jsx
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import helmet from 'helmet';
+import compression from 'compression';
+import rateLimit from 'express-rate-limit';
+import dotenv from 'dotenv';
 
-import { AuthProvider } from './contexts/AuthContext';
-import { ThemeProvider } from './contexts/ThemeContext';
-import { NotificationProvider } from './contexts/NotificationContext';
+// Import routes
+import authRoutes from './routes/Fayluna auth.js';
+import userRoutes from './routes/Fayluna users.js';
+import blogRoutes from './routes/Fayluna blogs.js';
+import bookmarkRoutes from './routes/Fayluna bookmarks.js';
+import analyticsRoutes from './routes/Fayluna analytics.js';
+import uploadRoutes from './routes/Fayluna upload.js';
 
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import SignUpPage from './pages/SignUpPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import ProfilePage from './pages/ProfilePage';
-import ExplorePage from './pages/ExplorePage';
-import SubmitBlogPage from './pages/SubmitBlogPage';
-import EditSubmissionPage from './pages/EditSubmissionPage';
-import MySubmissionsPage from './pages/MySubmissionsPage';
-import BookmarksPage from './pages/BookmarksPage';
-import AnalyticsPage from './pages/AnalyticsPage';
-import DetailedAnalyticsPage from './pages/DetailedAnalyticsPage';
-import NotFoundPage from './pages/NotFoundPage';
+// Import middleware
+import { errorHandler } from './middleware/Fayluna errorHandler.js';
 
-import PrivateRoute from './components/PrivateRoute'; // Wrapper for protected routes
+dotenv.config();
 
-function App() {
-  return (
-    <AuthProvider>
-      <ThemeProvider>
-        <NotificationProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/explore" element={<ExplorePage />} />
-              <Route
-                path="/profile/:userId"
-                element={
-                  <PrivateRoute>
-                    <ProfilePage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/submit"
-                element={
-                  <PrivateRoute>
-                    <SubmitBlogPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/edit-submission/:submissionId"
-                element={
-                  <PrivateRoute>
-                    <EditSubmissionPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/my-submissions"
-                element={
-                  <PrivateRoute>
-                    <MySubmissionsPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/bookmarks"
-                element={
-                  <PrivateRoute>
-                    <BookmarksPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/analytics"
-                element={
-                  <PrivateRoute>
-                    <AnalyticsPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/analytics/detailed/:postId"
-                element={
-                  <PrivateRoute>
-                    <DetailedAnalyticsPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </Router>
-        </NotificationProvider>
-      </ThemeProvider>
-    </AuthProvider>
-  );
-}
+const app = express();
 
-export default App;
+// Middleware
+app.use(helmet());
+app.use(cors());
+app.use(compression());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan('dev'));
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // max 100 requests per window per IP
+});
+app.use(limiter);
+
+// API routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/blogs', blogRoutes);
+app.use('/api/bookmarks', bookmarkRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/upload', uploadRoutes);
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// 404 handler
+app.use((req, res, next) => {
+  res.status(404).json({ error: 'Not Found' });
+});
+
+// Global error handler
+app.use(errorHandler);
+
+export default app;
 

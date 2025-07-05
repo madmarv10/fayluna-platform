@@ -1,6 +1,6 @@
 // backend/src/controllers/uploadController.js
 
-const uploadService = require('../services/uploadService');
+import uploadService from '../services/Fayluna uploadService.js';
 
 /**
  * @desc    Handle image upload
@@ -28,6 +28,12 @@ const uploadImage = async (req, res, next) => {
   }
 };
 
-module.exports = {
+const deleteImage = async (req, res, next) => {
+  // Placeholder for delete image functionality
+  res.status(501).json({ message: 'Delete image not implemented yet' });
+};
+
+export {
   uploadImage,
+  deleteImage,
 };

@@ -1,13 +1,13 @@
 // routes/blogRoutes.js
 import express from "express";
 import {
-  createBlog,
   getAllBlogs,
   getBlogById,
+  createBlog,
   updateBlog,
   deleteBlog,
   searchBlogs
-} from "../controllers/blogController.js";
+} from "../controllers/Fayluna blogController.js";
 
 const router = express.Router();
 

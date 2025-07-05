@@ -1,6 +1,6 @@
 // routes/uploadRoutes.js
 import express from "express";
-import { uploadImage } from "../controllers/uploadController.js";
+import { uploadImage, deleteImage } from "../controllers/Fayluna uploadController.js";
 
 const router = express.Router();
 

@@ -1,66 +1,26 @@
 // services/analyticsService.js
 
-import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api';
-
 const analyticsService = {
-  async getDashboardMetrics() {
-    try {
-      const token = localStorage.getItem('authToken');
-      const response = await axios.get(`${API_BASE_URL}/analytics/dashboard`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch dashboard metrics' };
-    }
+  async getSummary(userId) {
+    // Implement logic to get analytics summary for user
+    return { totalViews: 0, totalClicks: 0, totalSubmissions: 0 };
   },
-
-  async getBlogAnalytics(blogId) {
-    try {
-      const token = localStorage.getItem('authToken');
-      const response = await axios.get(`${API_BASE_URL}/analytics/blog/${blogId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch blog analytics' };
-    }
+  async getPostAnalytics(userId, postId) {
+    // Implement logic to get analytics for a specific post
+    return { postId, views: 0, clicks: 0 };
   },
-
-  async getUserAnalytics(userId) {
-    try {
-      const token = localStorage.getItem('authToken');
-      const response = await axios.get(`${API_BASE_URL}/analytics/user/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch user analytics' };
-    }
+  async getTimeSeries({ userId, postId, startDate, endDate }) {
+    // Implement logic to get time series data
+    return [];
   },
-
-  async getAllAnalytics(params = {}) {
-    try {
-      const token = localStorage.getItem('authToken');
-      const response = await axios.get(`${API_BASE_URL}/analytics`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params,
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch analytics data' };
-    }
+  async getEngagementStats(userId, postId) {
+    // Implement logic to get engagement stats
+    return { likes: 0, shares: 0, comments: 0 };
   },
+  async getTrafficSources(userId) {
+    // Implement logic to get traffic sources
+    return [];
+  }
 };
 
 export default analyticsService;

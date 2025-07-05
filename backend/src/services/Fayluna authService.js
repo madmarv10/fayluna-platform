@@ -1,57 +1,159 @@
 // services/authService.js
 
-import axios from 'axios';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import User from '../models/Fayluna User.js';
+import { sendEmail } from './Fayluna emailService.js';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api';
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 const authService = {
-  async login(email, password) {
+  async signup({ name, email, password }) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
-      const { token, user } = response.data;
-      // Store token in localStorage or cookies as needed
-      localStorage.setItem('authToken', token);
-      return user;
-    } catch (error) {
-      throw error.response?.data || { message: 'Login failed' };
-    }
-  },
+      // Check if user already exists
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        throw new Error('User already exists with this email');
+      }
 
-  async signup(name, email, password) {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/auth/signup`, { name, email, password });
-      const { token, user } = response.data;
-      localStorage.setItem('authToken', token);
-      return user;
-    } catch (error) {
-      throw error.response?.data || { message: 'Signup failed' };
-    }
-  },
+      // Hash password
+      const saltRounds = 12;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  logout() {
-    localStorage.removeItem('authToken');
-    // Optionally, call backend logout endpoint if needed
-  },
-
-  getCurrentUser() {
-    const token = localStorage.getItem('authToken');
-    if (!token) return null;
-    // Decode token or get user info from storage or API
-    // For simplicity, you might want to fetch user details from API here
-    return null; // placeholder, implement as needed
-  },
-
-  async refreshToken() {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {}, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+      // Create new user
+      const user = new User({
+        name,
+        email,
+        password: hashedPassword,
       });
-      const { token } = response.data;
-      localStorage.setItem('authToken', token);
-      return token;
+
+      await user.save();
+
+      // Generate JWT token
+      const token = jwt.sign(
+        { userId: user._id, email: user.email },
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRES_IN }
+      );
+
+      // Remove password from response
+      const userResponse = user.toObject();
+      delete userResponse.password;
+
+      return { user: userResponse, token };
     } catch (error) {
-      this.logout();
-      throw error.response?.data || { message: 'Token refresh failed' };
+      throw error;
+    }
+  },
+
+  async login({ email, password }) {
+    try {
+      // Find user by email
+      const user = await User.findOne({ email });
+      if (!user) {
+        throw new Error('Invalid email or password');
+      }
+
+      // Check password
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        throw new Error('Invalid email or password');
+      }
+
+      // Generate JWT token
+      const token = jwt.sign(
+        { userId: user._id, email: user.email },
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRES_IN }
+      );
+
+      // Remove password from response
+      const userResponse = user.toObject();
+      delete userResponse.password;
+
+      return { user: userResponse, token };
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async logout(token) {
+    // In a simple implementation, we just return success
+    // In a more complex setup, you might want to blacklist the token
+    return { success: true };
+  },
+
+  async sendPasswordResetEmail(email) {
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        // Don't reveal if user exists or not
+        return { success: true };
+      }
+
+      // Generate reset token
+      const resetToken = jwt.sign(
+        { userId: user._id, email: user.email },
+        JWT_SECRET,
+        { expiresIn: '1h' }
+      );
+
+      // Store reset token in user document (you might want to add a field for this)
+      // For now, we'll just send the email
+
+      // Send email
+      const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
+      
+      await sendEmail({
+        to: email,
+        subject: 'Password Reset Request',
+        html: `
+          <h1>Password Reset Request</h1>
+          <p>You requested a password reset. Click the link below to reset your password:</p>
+          <a href="${resetUrl}">Reset Password</a>
+          <p>This link will expire in 1 hour.</p>
+          <p>If you didn't request this, please ignore this email.</p>
+        `
+      });
+
+      return { success: true };
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async resetPassword({ token, newPassword }) {
+    try {
+      // Verify token
+      const decoded = jwt.verify(token, JWT_SECRET);
+      
+      // Find user
+      const user = await User.findById(decoded.userId);
+      if (!user) {
+        throw new Error('Invalid reset token');
+      }
+
+      // Hash new password
+      const saltRounds = 12;
+      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+      // Update password
+      user.password = hashedPassword;
+      await user.save();
+
+      return { success: true };
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async getCurrentUser(userId) {
+    try {
+      const user = await User.findById(userId).select('-password');
+      return user;
+    } catch (error) {
+      throw error;
     }
   }
 };

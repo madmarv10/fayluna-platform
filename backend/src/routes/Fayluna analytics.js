@@ -4,7 +4,7 @@ import {
   getUserAnalytics,
   getBlogAnalytics,
   getPlatformAnalytics
-} from "../controllers/analyticsController.js";
+} from "../controllers/Fayluna analyticsController.js";
 
 const router = express.Router();
 

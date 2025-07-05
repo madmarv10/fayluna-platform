@@ -1,66 +1,40 @@
 // backend/src/models/Bookmark.js
 
-const { DataTypes } = require('sequelize');
-const sequelize = require('../utils/database'); // adjust this to your actual Sequelize instance path
+import mongoose from 'mongoose';
 
-/**
- * Bookmark Model
- *
- * Fields:
- *  - id: Primary key
- *  - userId: ID of the user who bookmarked
- *  - blogId: ID of the blog being bookmarked
- *  - createdAt / updatedAt: automatic timestamps
- *
- * Each bookmark represents a saved blog post by a user.
- */
-
-const Bookmark = sequelize.define(
-  'Bookmark',
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'users', // refers to the users table
-        key: 'id',
-      },
-      onDelete: 'CASCADE',
-    },
-
-    blogId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'blogs', // refers to the blogs table
-        key: 'id',
-      },
-      onDelete: 'CASCADE',
-    },
+const bookmarkSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
-  {
-    tableName: 'bookmarks',
-    timestamps: true,
-    underscored: true,
-    indexes: [
-      {
-        unique: true,
-        fields: ['user_id', 'blog_id'], // prevent duplicate bookmarks by the same user
-      },
-    ],
+  blog: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Blog',
+    required: true
   }
-);
+}, {
+  timestamps: true
+});
 
-// Associations
-Bookmark.associate = (models) => {
-  Bookmark.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
-  Bookmark.belongsTo(models.Blog, { foreignKey: 'blog_id', as: 'blog' });
+// Compound index to prevent duplicate bookmarks
+bookmarkSchema.index({ user: 1, blog: 1 }, { unique: true });
+
+// Virtual for getting bookmark's full URL
+bookmarkSchema.virtual('bookmarkUrl').get(function() {
+  return `/bookmarks/${this._id}`;
+});
+
+// Static method to check if user has bookmarked a blog
+bookmarkSchema.statics.hasBookmarked = function(userId, blogId) {
+  return this.exists({ user: userId, blog: blogId });
 };
 
-module.exports = Bookmark;
+// Static method to get bookmark count for a blog
+bookmarkSchema.statics.getBookmarkCount = function(blogId) {
+  return this.countDocuments({ blog: blogId });
+};
+
+const Bookmark = mongoose.model('Bookmark', bookmarkSchema);
+
+export default Bookmark;

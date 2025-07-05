@@ -1,104 +1,110 @@
 // backend/src/models/Blog.js
 
-const { DataTypes } = require('sequelize');
-const sequelize = require('../utils/database'); // adjust path to your Sequelize instance
+import mongoose from 'mongoose';
 
-/**
- * Blog Model
- *
- * Fields:
- *  - id: auto-incrementing primary key
- *  - title: title of the submitted blog link
- *  - url: external blog URL (redirect target)
- *  - photoUrl: optional thumbnail/image URL
- *  - description: short description or summary
- *  - authorId: foreign key referencing User.id (the submitter)
- *  - createdAt / updatedAt: timestamps managed by Sequelize
- */
-
-const Blog = sequelize.define('Blog', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-
+const blogSchema = new mongoose.Schema({
   title: {
-    type: DataTypes.STRING(100),
-    allowNull: false,
-    validate: {
-      len: {
-        args: [5, 100],
-        msg: 'Title must be between 5 and 100 characters',
-      },
-    },
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 5,
+    maxlength: 100
   },
-
   url: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      isUrl: {
-        msg: 'URL must be a valid link',
-      },
-      notEmpty: {
-        msg: 'URL cannot be empty',
-      },
-    },
+    type: String,
+    required: true,
+    trim: true
   },
-
   photoUrl: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      isUrl: {
-        msg: 'Photo URL must be a valid link',
-      },
-    },
+    type: String,
+    default: null
   },
-
   description: {
-    type: DataTypes.STRING(500),
-    allowNull: false,
-    validate: {
-      len: {
-        args: [0, 500],
-        msg: 'Description cannot exceed 500 characters',
-      },
-    },
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 500
   },
-
-  authorId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'users', // table name
-      key: 'id',
-    },
-    onDelete: 'CASCADE',
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  tags: [{
+    type: String,
+    trim: true
+  }],
+  category: {
+    type: String,
+    default: 'general'
+  },
+  status: {
+    type: String,
+    enum: ['draft', 'published', 'archived'],
+    default: 'published'
+  },
+  views: {
+    type: Number,
+    default: 0
+  },
+  likes: {
+    type: Number,
+    default: 0
+  },
+  bookmarks: {
+    type: Number,
+    default: 0
   }
 }, {
-  tableName: 'blogs',
-  timestamps: true,
-  underscored: true,
+  timestamps: true
 });
 
-// Associations (to be called after all models are defined)
-Blog.associate = (models) => {
-  // A Blog belongs to one User (author)
-  Blog.belongsTo(models.User, { foreignKey: 'author_id', as: 'author' });
+// Indexes for better query performance
+blogSchema.index({ author: 1, createdAt: -1 });
+blogSchema.index({ status: 1, createdAt: -1 });
+blogSchema.index({ category: 1 });
+blogSchema.index({ tags: 1 });
 
-  // A Blog can have many Comments
-  Blog.hasMany(models.Comment, { foreignKey: 'blog_id', as: 'comments' });
+// Virtual for getting blog's full URL
+blogSchema.virtual('fullUrl').get(function() {
+  return this.url;
+});
 
-  // A Blog can have many Likes
-  Blog.hasMany(models.Like, { foreignKey: 'blog_id', as: 'likes' });
-
-  // A Blog can be bookmarked by many Users
-  Blog.hasMany(models.Bookmark, { foreignKey: 'blog_id', as: 'bookmarks' });
-
-  // A Blog can have Analytics entries
-  Blog.hasMany(models.Analytics, { foreignKey: 'blog_id', as: 'analytics' });
+// Method to increment views
+blogSchema.methods.incrementViews = function() {
+  this.views += 1;
+  return this.save();
 };
 
-module.exports = Blog;
+// Method to increment likes
+blogSchema.methods.incrementLikes = function() {
+  this.likes += 1;
+  return this.save();
+};
+
+// Method to increment bookmarks
+blogSchema.methods.incrementBookmarks = function() {
+  this.bookmarks += 1;
+  return this.save();
+};
+
+// Static method to find blogs by author
+blogSchema.statics.findByAuthor = function(authorId) {
+  return this.find({ author: authorId }).populate('author', 'name username avatarUrl');
+};
+
+// Static method to search blogs
+blogSchema.statics.search = function(query) {
+  return this.find({
+    $or: [
+      { title: { $regex: query, $options: 'i' } },
+      { description: { $regex: query, $options: 'i' } },
+      { tags: { $in: [new RegExp(query, 'i')] } }
+    ],
+    status: 'published'
+  }).populate('author', 'name username avatarUrl');
+};
+
+const Blog = mongoose.model('Blog', blogSchema);
+
+export default Blog;
